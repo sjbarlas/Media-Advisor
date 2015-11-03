@@ -27,13 +27,13 @@
 )
 ; *********** SECOND RULE *********** 
 ; *********** THIRD RULE *********** 
-/*(defrule go-rule-3
-	=>
-	(printout t "What medium is it?" crlf)
-	(bind ?m (read))
-	(assert (medium ?m))
-	(run)
-)*/
+;(defrule go-rule-3
+;	=>
+;	(printout t "What medium is it?" crlf)
+;	(bind ?m (read))
+;	(assert (medium ?m))
+;	(run)
+;)
 ; *********** THIRD RULE *********** 
 
 ; All the rules from 1-14
