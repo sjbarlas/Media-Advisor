@@ -2,10 +2,10 @@
 
 (import javax.swing.*)
 (import javax.swing.JFrame)
-(import javax.swing.border.EmptyBorder)
+(import javax.swing.border.EmptyBorder) ; frame space
 (import java.awt.event.ActionListener)
 (import java.awt.BorderLayout)
-(import java.awt.GridLayout)
+(import java.awt.GridLayout) ; for the button
 (import java.awt.Color)
 	
 ; *********** FIRST RULE *********** 
@@ -160,23 +160,24 @@
 ; *********** ORIGINAL3 ***********
 
 ; DEFGLOBALS
-	(defglobal ?*frame* = 0)
-	(defglobal ?*content* = 0)
-	(defglobal ?*environment-box* = 0)
-	(defglobal ?*job-box* = 0)
-	(defglobal ?*output-medium* = 0)
+	(defglobal ?*frame* = 0) # Screen frame
+	(defglobal ?*jAndE* = 0) # Storage
+	(defglobal ?*environment-box* = 0) # Environments
+	(defglobal ?*job-box* = 0) # Jobs
+	(defglobal ?*output-medium* = 0) # Advisable medium
  
 ; Frame creation
 (deffunction frame ()
-	(bind ?*frame* (new JFrame "Media Advisor with Jess"))
-	(bind ?*content* (?*frame* getContentPane))
-	(?*content* setLayout (new GridLayout 5 5 5 5))
-	(?*content* setBorder (new EmptyBorder 10 10 10 10))
+	(bind ?*frame* (new JFrame "MEDIA ADVISOR WITH JESS"))
+	(bind ?*jAndE* (?*frame* getContentPane))
+	(?*jAndE* setLayout (new GridLayout 5 5 5 5))
+	(?*jAndE* setBorder (new EmptyBorder 10 10 10 10))
 )
  
-; Frame Contents and Panels
-(deffunction content ()
-	(?*content* add (new JLabel "Environment of the trainee:"))
+; Storing the Jobs and Environments
+(deffunction storing ()
+	; Environment drop down menu
+	(?*jAndE* add (new JLabel "Environment of the trainee:"))
 	(bind ?*environment-box* (new JComboBox (list
 		"papers"
 		"manuals"
@@ -195,9 +196,10 @@
 		"equipment"
 		"ground"
 		"outside")))
-	(?*content* add ?*environment-box*)
+	(?*jAndE* add ?*environment-box*)
  
-	(?*content* add (new JLabel "Job of the trainee:"))
+	; Job drop down menu
+	(?*jAndE* add (new JLabel "Job of the trainee:"))
 	(bind ?*job-box* (new JComboBox (list
 		"lecturing"
 		"advising"
@@ -214,15 +216,17 @@
 		"catching"
 		"playing"
 		"hitting")))
-	(?*content* add ?*job-box*)
+	(?*jAndE* add ?*job-box*)
  
-	(?*content* add (new JPanel)) ; Button
+	; Button
+	(?*jAndE* add (new JPanel))
 	(bind ?button (new JButton "Click for medium"))
-	(?*content* add ?button)
+	(?*jAndE* add ?button)
  
-	(?*content* add (new JLabel "Advisable medium is:"))
+	; Medium Output
+	(?*jAndE* add (new JLabel "Advisable medium is:"))
 	(bind ?*output* (new JLabel))
-	(?*content* add ?*output*)
+	(?*jAndE* add ?*output*)
  
 	; Button behaviour
 	(?button addActionListener
@@ -237,18 +241,19 @@
 	)
 )
  
-; Showing the Frame
+; Displaying the frame
 (deffunction display ()
 	(?*frame* pack)
 	(?*frame* setVisible TRUE) ;show the text
 	(?*frame* setLocationRelativeTo nil) ;centre frame on screen
 )
 
-; Program initialisation
+; Opening the frame
 (defrule open
+	(initial-fact)
 	=>
 	(frame) ; creating the GUI
-	(content) ; jobs and environments
+	(storing) ; jobs and environments
 	(display) ; frame appears on screen
 )
  
