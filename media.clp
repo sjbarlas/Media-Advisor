@@ -160,59 +160,24 @@
 ; *********** ORIGINAL3 ***********
 
 ; DEFGLOBALS
-	(defglobal ?*frame* = 50)
+	(defglobal ?*frame* = 0)
 	(defglobal ?*content* = 0)
-	(defglobal ?*envbox* = 0)
-	(defglobal ?*jobbox* = 0)
-	(defglobal ?*feedback* = 0)
-	(defglobal ?*output* = 0)
-
-; Fired when nothing matches
-(defrule default
-	?done <- (done)
-	?situation <- (stimulus-situation ?)
-	?response <- (stimulus-response ?)
-	?feedback <- (feedback-required ?)
-	=>
-	(retract ?situation)
-	(retract ?response)
-	(retract ?feedback)
-	(assert (medium unknown))
-)
- 
-; Change text on the label when Medium matches
-(defrule result
-	?done <- (done)
-	?medf <- (medium ?m)
-	=>
-	(retract ?done)
-	(retract ?medf)
-	(set-output ?m)
-	(printout t "Medium is " ?m crlf)
-)
- 
-; Function for finding Medium
-(deffunction find-medium (?e ?j ?f)
-	(assert (environment ?e))
-	(assert (job ?j))
-	(assert (feedback-required ?f))
-	(run)
-	(assert (done))
-	(run)
-)
+	(defglobal ?*environment-box* = 0)
+	(defglobal ?*job-box* = 0)
+	(defglobal ?*output-medium* = 0)
  
 ; Frame creation
-(deffunction create-frame ()
+(deffunction frame ()
 	(bind ?*frame* (new JFrame "Media Advisor with Jess"))
 	(bind ?*content* (?*frame* getContentPane))
-	(?*content* setLayout (new GridLayout 5 2 5 5))
+	(?*content* setLayout (new GridLayout 5 5 5 5))
 	(?*content* setBorder (new EmptyBorder 10 10 10 10))
 )
  
 ; Frame Contents and Panels
-(deffunction add-content ()
+(deffunction content ()
 	(?*content* add (new JLabel "Environment of the trainee:"))
-	(bind ?*envbox* (new JComboBox (list
+	(bind ?*environment-box* (new JComboBox (list
 		"papers"
 		"manuals"
 		"documents"
@@ -230,10 +195,10 @@
 		"equipment"
 		"ground"
 		"outside")))
-	(?*content* add ?*envbox*)
+	(?*content* add ?*environment-box*)
  
 	(?*content* add (new JLabel "Job of the trainee:"))
-	(bind ?*jobbox* (new JComboBox (list
+	(bind ?*job-box* (new JComboBox (list
 		"lecturing"
 		"advising"
 		"counselling"
@@ -249,18 +214,13 @@
 		"catching"
 		"playing"
 		"hitting")))
-	(?*content* add ?*jobbox*)
- 
-	(?*content* add (new JLabel "Feedback required?"))
-	(bind ?*feedback* (new JCheckBox))
-	(?*feedback* setSelected TRUE)
-	(?*content* add ?*feedback*)
+	(?*content* add ?*job-box*)
  
 	(?*content* add (new JPanel)) ; Button
 	(bind ?button (new JButton "Click for medium"))
 	(?*content* add ?button)
  
-	(?*content* add (new JLabel "Suitable medium is:"))
+	(?*content* add (new JLabel "Advisable medium is:"))
 	(bind ?*output* (new JLabel))
 	(?*content* add ?*output*)
  
@@ -268,10 +228,9 @@
 	(?button addActionListener
 		(implement ActionListener using
 			(lambda (?name ?event)
-				(find-medium
-					(?*envbox* getSelectedItem)
-					(?*jobbox* getSelectedItem)
-					(?*feedback* isSelected)
+				(click-button
+					(?*environment-box* getSelectedItem)
+					(?*job-box* getSelectedItem)
 				)
 			)
 		)
@@ -279,25 +238,18 @@
 )
  
 ; Showing the Frame
-(deffunction show-frame ()
+(deffunction display ()
 	(?*frame* pack)
 	(?*frame* setVisible TRUE) ;show the text
-	(?*frame* setLocationRelativeTo nil) ;centre GUI on screen
-)
- 
-; Output label text change
-(deffunction set-output (?t)
-        (?*output* setText ?t)
+	(?*frame* setLocationRelativeTo nil) ;centre frame on screen
 )
 
-; Main program init
-(defrule init
-	?f <- (initial-fact)
+; Program initialisation
+(defrule open
 	=>
-	(retract ?f)
-	(create-frame)
-	(add-content)
-	(show-frame)
+	(frame) ; creating the GUI
+	(content) ; jobs and environments
+	(display) ; frame appears on screen
 )
  
 (reset)
