@@ -159,6 +159,8 @@
 )
 ; *********** ORIGINAL3 ***********
 
+
+; *********** GLOBALS ***********
 ; DEFGLOBALS
 	(defglobal ?*frame* = 0) # Screen frame
 	(defglobal ?*jAndE* = 0) # Storage
@@ -177,8 +179,8 @@
 ; Storing the Jobs and Environments
 (deffunction storing ()
 	; Environment drop down menu
-	(?*jAndE* add (new JLabel "Environment of the trainee:"))
-	(bind ?*environment-box* (new JComboBox (list
+	(?*jAndE* add (new JLabel "Environment of the trainee:")) ; text
+	(bind ?*environment-box* (new JComboBox (list ; drop down list
 		"papers"
 		"manuals"
 		"documents"
@@ -219,14 +221,14 @@
 	(?*jAndE* add ?*job-box*)
  
 	; Button
-	(?*jAndE* add (new JPanel))
+	(?*jAndE* add (new JPanel)) ; container for button
 	(bind ?button (new JButton "Click for medium"))
 	(?*jAndE* add ?button)
  
 	; Medium Output
 	(?*jAndE* add (new JLabel "Advisable medium is:"))
-	(bind ?*output* (new JLabel))
-	(?*jAndE* add ?*output*)
+	(bind ?*output-medium* (new JLabel))
+	(?*jAndE* add ?*output-medium*)
  
 	; Button behaviour
 	(?button addActionListener
@@ -244,8 +246,8 @@
 ; Displaying the frame
 (deffunction display ()
 	(?*frame* pack)
-	(?*frame* setVisible TRUE) ;show the text
-	(?*frame* setLocationRelativeTo nil) ;centre frame on screen
+	(?*frame* setVisible TRUE) ; show the text
+	(?*frame* setLocationRelativeTo nil) ; centre frame on screen
 )
 
 ; Opening the frame
