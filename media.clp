@@ -27,16 +27,16 @@
 )
 ; *********** SECOND RULE *********** 
 ; *********** THIRD RULE *********** 
-;(defrule go-rule-3
-;	=>
-;	(printout t "What medium is it?" crlf)
-;	(bind ?m (read))
-;	(assert (medium ?m))
-;	(run)
-;)
+(defrule go-rule-3
+	=>
+	(printout t "Is feedback required?" crlf)
+	(bind ?f (read))
+	(assert (feedback-required ?f))
+	(run)
+)
 ; *********** THIRD RULE *********** 
 
-; All the rules from 1-14
+; All the rules from 1-14 and 3 ORIGINALS
 (defrule rule-1
 	(environment papers | manuals | documents | textbooks)
 	=>
@@ -104,7 +104,7 @@
 (defrule rule-9
 	(stimulus-situation physical object)
 	(stimulus-response hands-on)
-	(feedback-required TRUE)
+	(feedback-required yes)
 	=>
 	(assert (medium workshop))
 )
@@ -112,7 +112,7 @@
 (defrule rule-10
 	(stimulus-situation sumbolic)
 	(stimulus-response analytical)
-	(feedback-required TRUE)
+	(feedback-required yes)
 	=>
 	(assert (medium lecture-tutorial))
 )
@@ -120,7 +120,7 @@
 (defrule rule-11
 	(stimulus-situation visual)
 	(stimulus-response oral)
-	(feedback-required FALSE)
+	(feedback-required no)
 	=>
 	(assert (medium videocassette))
 )
@@ -128,7 +128,7 @@
 (defrule rule-12
 	(stimulus-situation visual)
 	(stimulus-response oral)
-	(feedback-required TRUE)
+	(feedback-required yes)
 	=>
 	(assert (medium lecture-tutorial))
 )
@@ -136,7 +136,7 @@
 (defrule rule-13
 	(stimulus-situation verbal)
 	(stimulus-response analytical)
-	(feedback-required TRUE)
+	(feedback-required yes)
 	=>
 	(assert (medium lecture-tutorial))
 )
@@ -144,7 +144,7 @@
 (defrule rule-14
 	(stimulus-situation verbal)
 	(stimulus-response oral)
-	(feedback-required TRUE)
+	(feedback-required yes)
 	=>
 	(assert (medium role-play exercises))
 )
@@ -153,12 +153,11 @@
 (defrule rule-ORIGINAL3
 	(stimulus-situation outdoor)
 	(stimulus-response athletic)
-	(feedback-required TRUE)
+	(feedback-required yes)
 	=>
 	(assert (medium practise-play))
 )
 ; *********** ORIGINAL3 ***********
-
 
 ; *********** GLOBALS ***********
 ; DEFGLOBALS
@@ -166,6 +165,7 @@
 	(defglobal ?*jAndE* = 0) # Storage
 	(defglobal ?*environment-box* = 0) # Environments
 	(defglobal ?*job-box* = 0) # Jobs
+	(defglobal ?*feedback-required* = 0) # Feedback
 	(defglobal ?*output-medium* = 0) # Advisable medium
  
 ; Frame creation
@@ -220,6 +220,13 @@
 		"hitting")))
 	(?*jAndE* add ?*job-box*)
  
+	; Feedback
+	(?*jAndE* add (new JLabel "Feedback required:"))
+	(bind ?*feedback-required* (new JComboBox (list
+		"yes"
+		"no")))
+	(?*jAndE* add ?*feedback-required*)
+	
 	; Button
 	(?*jAndE* add (new JPanel)) ; container for button
 	(bind ?button (new JButton "Click for medium"))
@@ -237,12 +244,13 @@
 				(click-button
 					(?*environment-box* getSelectedItem)
 					(?*job-box* getSelectedItem)
+					(?*feedback-required* getSelectedItem)
 				)
 			)
 		)
 	)
 )
- 
+
 ; Displaying the frame
 (deffunction display ()
 	(?*frame* pack)
